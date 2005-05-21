@@ -1,3 +1,14 @@
+2005-05-20  Jeff Muizelaar <jeff@infidigm.net>
+
+	* Makefile:
+	* test-gen/a.pbm:
+	* test-gen/image.inc:
+	* test-gen/image.pl:
+	* test-gen/mask.pl:
+	* test-gen/romedalen.ppm:
+	* test-gen/text.pl:
+	Add some rather ugly perl that generates the test pdf files.
+
 2005-04-24  Jeff Muizelaar  <jeff@infidigm.net>
 
 	Initial import

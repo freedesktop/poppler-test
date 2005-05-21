@@ -5,14 +5,14 @@ use Text::PDF::File;
 use Text::PDF::Page;        # pulls in Pages
 use Text::PDF::Utils;       # not strictly needed
 use Text::PDF::SFont;
-do "test-gen/image.inc";
+do "image.inc";
 my $pdf = Text::PDF::File->new;            # Make up a new document
 my $root = Text::PDF::Pages->new($pdf);    # Make a page tree in the document
 $root->proc_set("PDF", "Text");         # Say that all pages have PDF and Text instructions
 $root->bbox(0, 0, 595, 840);            # hardwired page size A4 (for this app.) for all pages
 my $page = Text::PDF::Page->new($pdf, $root);      # Make a new page in the tree
 
-my ($w,$h,$bpc,$cs,$img)=parseImage('test-gen/a.pbm');
+my ($w,$h,$bpc,$cs,$img)=parseImage('a.pbm');
 my $key='IMG1';
 my $xo=PDFDict();
 $xo->{'ImageMask'}=PDFBool('true');

@@ -14,4 +14,4 @@ PDFS = mask.pdf text.pdf image.pdf
 tests: $(PDFS)
 
 $(PDFS): %.pdf: test-gen/%.pl
-	./$< tests/$@
+	cd test-gen && ./$(notdir $<) ../tests/$@

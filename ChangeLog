@@ -1,3 +1,11 @@
+2005-05-21  Jeff Muizelaar <jeff@infidigm.net>
+
+	* Makefile:
+	* test-gen/image.pl:
+	* test-gen/mask.pl:
+	* test-gen/text.pl:
+	use paths relative to test-gen instead of the project root.
+
 2005-05-20  Jeff Muizelaar <jeff@infidigm.net>
 
 	* Makefile:

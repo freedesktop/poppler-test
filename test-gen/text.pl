@@ -4,7 +4,7 @@ use Text::PDF::File;
 use Text::PDF::Page;        # pulls in Pages
 use Text::PDF::Utils;       # not strictly needed
 use Text::PDF::SFont;
-do "test-gen/image.inc";
+do "image.inc";
 $pdf = Text::PDF::File->new;            # Make up a new document
 $root = Text::PDF::Pages->new($pdf);    # Make a page tree in the document
 $root->proc_set("PDF", "Text");         # Say that all pages have PDF and Text instructions
@@ -15,7 +15,7 @@ $root->add_font($font);                                     # Tell all pages abo
 
 $page->add("q\n"); #saveState
 $page->add("BT 1 0 0 1 200 600 Tm /F0 48 Tf 5 Tr (Hello World!) Tj ET\n");        # put some content on the page
-my ($w,$h,$bpc,$cs,$img)=parseImage('test-gen/romedalen.ppm');
+my ($w,$h,$bpc,$cs,$img)=parseImage('romedalen.ppm');
 my $key='IMG1';
 $xo=PDFDict();
 $xo->{'Type'}=PDFName('XObject');

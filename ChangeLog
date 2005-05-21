@@ -1,3 +1,8 @@
+2005-05-21  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* Makefile:
+	fix dependencies so we build thing when we need them
+
 2005-05-21  Jeff Muizelaar <jeff@infidigm.net>
 
 	* Makefile:

@@ -1,7 +1,7 @@
 CFLAGS = $(shell pkg-config --cflags poppler-glib)
 LDLIBS = $(shell pkg-config --libs poppler-glib)
 
-PDFS = $(addprefix tests/, mask.pdf text.pdf image.pdf)
+PDFS = $(addprefix tests/, mask.pdf text.pdf image.pdf type3.pdf)
 
 all : test-poppler $(PDFS)
 

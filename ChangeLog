@@ -1,3 +1,11 @@
+2005-06-02  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* Makefile:
+	* test-gen/type3.pl:
+	* tests/type3.pdf:
+	* tests/type3.pdf-0-cairo-ref.png:
+	Add a type3 font test
+
 2005-05-21  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* Makefile:

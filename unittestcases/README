@@ -1,0 +1,14 @@
+About the unit test sample files.
+
+These files are added in here to support unit testing of Poppler
+functionality. 
+
+orientation.pdf: a file containing one page in each major
+orientation. The first page is portrait, the next is landscape
+(portrait rotated 90 degrees clockwise), the next is upside down
+(portrait rotated 180 degrees), and the final is seascape (portrait
+rotated 90 degrees counterclockwise).
+This file has permissions set, such that only low resolution printing
+is allowed, inserting, deleting and rotating pages is allowed, copying
+content is not allowed, and text reading is allowed for accessibility.
+The password is "foo".

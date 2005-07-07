@@ -12,3 +12,7 @@ This file has permissions set, such that only low resolution printing
 is allowed, inserting, deleting and rotating pages is allowed, copying
 content is not allowed, and text reading is allowed for accessibility.
 The password is "foo".
+
+FullScreen.pdf, UseAttachments.pdf, UseNOne.pdf, UseOC.pdf,
+UseThumbs.pdf: simple files demonstrating various PageMode 
+options (where the name of the file matches the PageMode option).

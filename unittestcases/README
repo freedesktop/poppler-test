@@ -19,3 +19,5 @@ options (where the name of the file matches the PageMode option).
 
 PasswordEncrypted.pdf: single blank page, created with 
 Acrobat 7. This is encrypted with AES128. The password is "password".
+
+WithAttachments.pdf: a simple file with two files attached/ embedded. 

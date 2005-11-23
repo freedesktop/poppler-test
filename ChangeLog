@@ -1,3 +1,10 @@
+2005-11-22  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* Makefile: add deps for pango and gdk to make compilation succeed
+	* test-poppler.c: (poppler_test_page): fix to match parameter change
+	* tests/text.pdf-0-cairo-ref.png: update to match more recent version
+	of cairo
+
 2005-06-02  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* Makefile:

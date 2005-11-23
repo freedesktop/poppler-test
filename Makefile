@@ -1,4 +1,4 @@
-CFLAGS = $(shell pkg-config --cflags poppler-glib)
+CFLAGS = $(shell pkg-config --cflags poppler-glib pango gdk-2.0)
 LDLIBS = $(shell pkg-config --libs poppler-glib)
 
 PDFS = $(addprefix tests/, mask.pdf text.pdf image.pdf type3.pdf)

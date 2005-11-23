@@ -8,7 +8,6 @@ use Text::PDF::SFont;
 do "image.inc";
 $pdf = Text::PDF::File->new;            # Make up a new document
 $root = Text::PDF::Pages->new($pdf);    # Make a page tree in the document
-$root->proc_set("PDF", "Text");         # Say that all pages have PDF and Text instructions
 $root->bbox(0, 0, 595, 840);            # hardwired page size A4 (for this app.) for all pages
 $page = Text::PDF::Page->new($pdf, $root);      # Make a new page in the tree
 $font = Text::PDF::SFont->new($pdf, 'Helvetica', 'F0');     # Make a new font in the document

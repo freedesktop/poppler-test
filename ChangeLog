@@ -1,3 +1,18 @@
+2005-11-23  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* test-gen/image.pl:
+	* test-gen/inline-image.pl:
+	* test-gen/mask.pl:
+	* test-gen/text.pl:
+	* test-gen/type3.pl:
+	* tests/image.pdf:
+	* tests/inline-image.pdf:
+	* tests/mask.pdf:
+	* tests/text.pdf:
+	* tests/type3.pdf:
+	Cleanup the generation scripts a little based on comments from Leonard
+	Rosenthol.
+
 2005-11-22  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* Makefile:

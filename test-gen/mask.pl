@@ -30,8 +30,8 @@ $root->{'Resources'}->{'XObject'}=PDFDict();
 $root->{'Resources'}->{'XObject'}->{$key}=$xo;
 
 $page->add("q\n"); #saveState
-$page->add("0 0 34 rg\n");
-$page->add(sprintf("%0.6f %0.6f %0.6f %0.6f %0.6f %0.6f cm\n", $w,0,0,$h,100,500));
+$page->add("0 0 1 rg\n");
+$page->add(sprintf("%0.3f %0.3f %0.3f %0.3f %0.3f %0.3f cm\n", $w,0,0,$h,100,500));
 $page->add("/$key Do\n");
 $page->add("Q"); #restoreState
 $pdf->out_file($ARGV[0]);   # output the document to a file

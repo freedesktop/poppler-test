@@ -54,6 +54,7 @@ poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *documen
   if (error != NULL)
     FAIL (error->message);
   g_object_unref (G_OBJECT (page));
+  g_object_unref (G_OBJECT (pixbuf));
 
 
   pixels_changed = image_diff (png_name, ref_name, diff_name);

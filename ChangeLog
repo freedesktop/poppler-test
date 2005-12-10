@@ -1,3 +1,9 @@
+2005-12-09  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* buffer-diff.c: (image_diff):
+	* test-poppler.c: (poppler_test_page):
+	Plug two memory leaks.
+
 2005-11-23  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* test-gen/image.pl:

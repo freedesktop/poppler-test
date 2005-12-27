@@ -1,3 +1,8 @@
+2005-12-27  Jeff Muizelaar <jeff@infidigm.net>
+
+	* test-poppler.c: (main):
+	Make it possible to specify tests on the command line.
+
 2005-12-19  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* tests/cropbox.pdf-1-cairo-ref.png:

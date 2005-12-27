@@ -103,10 +103,17 @@ int main(int argc, char **argv)
   glob_t globbuf;
   int i;
   g_type_init ();
-  glob("tests/*.pdf", 0, NULL, &globbuf);
-  for (i=0; i<globbuf.gl_pathc; i++) {
-    poppler_test(globbuf.gl_pathv[i]);
+  if (argc > 1) {
+	  for (i=1; i<argc; i++) {
+		  poppler_test(argv[i]);
+	  }
+  } else {
+	  glob("tests/*.pdf", 0, NULL, &globbuf);
+	  for (i=0; i<globbuf.gl_pathc; i++) {
+		  poppler_test(globbuf.gl_pathv[i]);
+	  }
   }
+
   return 0;
 }
 

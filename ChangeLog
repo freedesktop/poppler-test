@@ -1,3 +1,9 @@
+2005-12-27  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* Makefile: make building without libtool the default.
+	To build with libtool, set the POPPLER_DIR environment variable
+	to the build directory of poppler.
+
 2005-12-27  Jeff Muizelaar <jeff@infidigm.net>
 
 	* test-poppler.c: (main):

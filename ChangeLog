@@ -1,3 +1,10 @@
+2006-01-03  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* test-gen/image.inc:
+	* tests/mask.pdf: change image.inc to read height*(width+7)/8 bytes so
+	that we read the right amount when width is not a multiple of 8. This
+	fixes viewing mask.pdf in acroreader.
+
 2005-12-27  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* Makefile: make building without libtool the default.

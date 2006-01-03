@@ -53,7 +53,7 @@ sub parsePNM {
 		($t,$w,$h)=($buf=~/^(P\d+)\s+(\d+)\s+(\d+)\s+/);
 		$bpc=1;
 		$s=0;
-		for($line=($w*$h/8);$line>0;$line--) {
+		for($line=(($w+7)*$h/8);$line>0;$line--) {
 			read(INF,$buf,1);
 			push(@img,$buf);
 		}

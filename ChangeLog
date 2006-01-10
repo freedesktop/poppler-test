@@ -1,3 +1,11 @@
+2006-01-10  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* test-gen/text.pl:
+	* tests/text.pdf:
+	* tests/text.pdf-0-cairo-ref.png:
+	Update text.pdf to test clipping of multiple strings
+	in a single text object.
+
 2006-01-03  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* test-gen/image.inc:

@@ -12,8 +12,6 @@ $page = Text::PDF::Page->new($pdf, $root);      # Make a new page in the tree
 $font = Text::PDF::SFont->new($pdf, 'Helvetica', 'F0');     # Make a new font in the document
 $root->add_font($font);                                     # Tell all pages about the font
 
-$page->add("q\n"); #saveState
-$page->add("BT 1 0 0 1 200 600 Tm /F0 48 Tf 5 Tr (Hello World!) Tj ET\n");        # put some content on the page
 my ($w,$h,$bpc,$cs,$img)=parseImage('romedalen.ppm');
 my $key='IMG1';
 $xo=PDFDict();
@@ -34,11 +32,23 @@ $x = 100;
 $y = 500;
 $sx = $w;
 $sy = $h;
+
+# draw some black text
+$page->add("0 0 1 rg\n");
+$page->add("BT 1 0 0 1 100 600 Tm /F0 48 Tf 0 Tr (Hello World!) Tj ET\n");
+
+$page->add("q\n"); #saveState
+#clip the image to the single string "Hello World!"
+$page->add("BT 1 0 0 1 100 500 Tm /F0 48 Tf 5 Tr (Hello World!) Tj ET\n");
 $page->add(sprintf("%0.3f %0.3f %0.3f %0.3f %0.3f %0.3f cm\n", $sx,0,0,$sy,$x,$y));
 $page->add("/$key Do\n");
 $page->add("Q\n"); #restoreState
-$page->add("0 0 1 rg\n");
-$page->add("BT 1 0 0 1 100 600 Tm /F0 48 Tf 0 Tr (Hello World!) Tj ET");        # put some content on the page
+
+
+#clip the image to both strings "Hello " and "World!"
+$page->add("BT 1 0 0 1 100 400 Tm /F0 48 Tf 5 Tr (Hello ) Tj (World!) Tj ET\n");
+$page->add(sprintf("%0.3f %0.3f %0.3f %0.3f %0.3f %0.3f cm\n", $sx,0,0,$sy,100,300));
+$page->add("/$key Do");
 
 $pdf->out_file($ARGV[0]);   # output the document to a file
 

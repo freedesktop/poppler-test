@@ -146,8 +146,10 @@ read_png_argb32 (const char         *filename,
 
     png_set_bgr (png);
     png_set_filler (png, 0xff, PNG_FILLER_AFTER);
-
-    png_set_read_user_transform_fn (png, premultiply_data);
+  
+    if (color_type == PNG_COLOR_TYPE_RGB_ALPHA
+	|| color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+      png_set_read_user_transform_fn (png, premultiply_data);
 
     png_read_update_info (png, info);
 

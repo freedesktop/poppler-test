@@ -1,3 +1,8 @@
+2006-03-31  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* read-png.c: (read_png_argb32): improve performance by only
+	premultiplying when there is alpha to premultiply.
+
 2006-01-10  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* test-gen/text.pl:

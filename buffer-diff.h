@@ -38,6 +38,11 @@ buffer_diff (unsigned char *buf_a,
 	     int	    height,
 	     int	    stride);
 
+int
+image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
+	    const char *filename_a,
+	    const char *filename_b,
+	    const char *filename_diff);
 /* Returns number of pixels changed, (or -1 on error).
  * Also saves a "diff" image intended to visually show where the
  * images differ.

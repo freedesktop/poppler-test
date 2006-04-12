@@ -1,3 +1,12 @@
+2006-04-12  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* buffer-diff.c: (buffer_diff), (image_buf_diff):
+	* buffer-diff.h:
+	* test-poppler.c: (gdk_pixbuf_compare), (poppler_test_page),
+	(poppler_test), (main): large performance improvements. I really
+	should have split this commit up, but I don't know if this code is
+	used by anyone other than me anyways. It should be correct.
+
 2006-03-31  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* read-png.c: (read_png_argb32): improve performance by only

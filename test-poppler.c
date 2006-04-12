@@ -18,51 +18,86 @@ typedef enum poppler_test_status {
       POPPLER_TEST_FAILURE
 } poppler_test_status_t;
 
-poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index) {
-  char *log_name, *png_name, *ref_name, *diff_name;
+poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *pdf_file, int page_index)
+{
+  char *png_name, *ref_name, *diff_name;
   char *srcdir;
-  GdkPixbuf *pixbuf, *thumb;
-  double width, height;
-  PopplerPage *page;
-  GError *error;
-  const char *backend = poppler_get_backend() == POPPLER_BACKEND_SPLASH ? "splash" : "cairo";
-  poppler_test_status_t ret;
+  GError *error = NULL;
   int pixels_changed;
-  /* Get the strings ready that we'll need. */
+  const char *backend = poppler_get_backend() == POPPLER_BACKEND_SPLASH ? "splash" : "cairo";
+   /* Get the strings ready that we'll need. */
   srcdir = getenv ("srcdir");
   if (!srcdir)
     srcdir = ".";
-
-  error = NULL;
-  asprintf (&log_name, "%s-%d-%s%s", pdf_file, page_index, backend, POPPLER_TEST_LOG_SUFFIX);
+ 
   asprintf (&png_name, "%s-%d-%s%s", pdf_file, page_index, backend, POPPLER_TEST_PNG_SUFFIX);
   asprintf (&ref_name, "%s/%s-%d-%s%s", srcdir, pdf_file, page_index, backend, POPPLER_TEST_REF_SUFFIX);
   asprintf (&diff_name, "%s-%d-%s%s", pdf_file, page_index, backend, POPPLER_TEST_DIFF_SUFFIX);
+#ifdef PNG_SAVE
+  gdk_pixbuf_save (pixbuf, png_name, "png", &error, NULL);
+  pixels_changed = image_diff (png_name, ref_name, diff_name);
+#else
+  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
 
+  int width = gdk_pixbuf_get_width (pixbuf);
+  int height = gdk_pixbuf_get_height (pixbuf);
+
+  int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  unsigned int *cairo_pixels = malloc(height * width * 4);
+  unsigned char *pixels = gdk_pixbuf_get_pixels(pixbuf);
+  unsigned char *pixels_p = pixels;
+
+  int j,i;
+  for (j=0; j<height; j++) {
+    pixels = pixels_p + rowstride * j;
+    for (i=0; i<width; i++) {
+      cairo_pixels[i+width*j] = (0xff000000) | (pixels[0] << 16) | (pixels[1] << 8) | pixels[2] << 0;
+      pixels += 3;
+    }
+  }
+
+  pixels_changed = image_buf_diff (cairo_pixels, width, height, width*4, png_name, ref_name, diff_name);
+
+  free (cairo_pixels);
+#endif
+  free (png_name);
+  free (ref_name);
+  free (diff_name);
+
+  return pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
+}
+
+poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index) {
+  GdkPixbuf *pixbuf, *thumb;
+  double width, height;
+  PopplerPage *page;
+  poppler_test_status_t ret;
+  
+  char thumb_file[strlen(pdf_file) + strlen("-thumb") + 1];
+  strcpy(thumb_file, pdf_file);
+  strcat(thumb_file, "-thumb");
+  
   page = poppler_document_get_page (document, page_index);
-  if (page == NULL)
+  if (!page)
     FAIL ("page not found");
 
   poppler_page_get_size (page, &width, &height);
 
   pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
   gdk_pixbuf_fill (pixbuf, 0x00106000);
-  poppler_page_render_to_pixbuf (page, 0, 0, width, height, 1, 0, pixbuf);
+  poppler_page_render_to_pixbuf (page, 0, 0, width, height, 1.0, 0, pixbuf);
 
-  gdk_pixbuf_save (pixbuf, png_name, "png", &error, NULL);
-
-  if (error != NULL)
-    FAIL (error->message);
+  ret = gdk_pixbuf_compare(pixbuf, pdf_file, page_index);
+  
+  thumb = poppler_page_get_thumbnail(page);
+  if (thumb)
+    ret |= gdk_pixbuf_compare(thumb, thumb_file, page_index);
+ 
+  if (thumb)
+    g_object_unref (G_OBJECT (thumb));
   g_object_unref (G_OBJECT (page));
   g_object_unref (G_OBJECT (pixbuf));
 
-
-  pixels_changed = image_diff (png_name, ref_name, diff_name);
-
-  ret = pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
-  free (png_name);
-  free (ref_name);
-  free (diff_name);
   return ret;
 }
 
@@ -95,6 +130,7 @@ void poppler_test(char *pdf_file)
     else
       printf("PASS\n");
   }
+  g_object_unref (G_OBJECT (document));
   gfree (uri);
 }
 
@@ -112,6 +148,7 @@ int main(int argc, char **argv)
 	  for (i=0; i<globbuf.gl_pathc; i++) {
 		  poppler_test(globbuf.gl_pathv[i]);
 	  }
+	  globfree(&globbuf);
   }
 
   return 0;

@@ -1,3 +1,9 @@
+2006-06-18  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* tests/degenerate-path.pdf-0-cairo-ref.png:
+	Add reference image for degenerate path test. poppler-cairo currently
+	fails.
+
 2006-06-17  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* Makefile:

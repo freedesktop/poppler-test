@@ -1,3 +1,9 @@
+2006-06-17  Jeff Muizelaar  <jeff@infidigm.net>
+
+	* Makefile:
+	* test-gen/degenerate-path.pl:
+	* tests/degenerate-path.pdf:
+
 2006-04-12  Jeff Muizelaar  <jeff@infidigm.net>
 
 	* buffer-diff.c: (buffer_diff), (image_buf_diff):

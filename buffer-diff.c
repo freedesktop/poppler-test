@@ -66,6 +66,7 @@ buffer_diff (unsigned char *buf_a,
 	    int channel;
 	    uint32_t value_a, value_b;
 	    int pixel_differs = 0;
+	    //XXX: it looks like this might overread...
 	    value_a = *(uint32_t*)(&(row_a[x*4]));
 	    value_b = *(uint32_t*)(&(row_b[x*4]));
 	    if (value_a != value_b) {
@@ -93,6 +94,21 @@ buffer_diff (unsigned char *buf_a,
     return pixels_changed;
 }
 
+static void copy_file(const char *filename_a, const char *filename_b)
+{
+  char buf[4096];
+  FILE *filea = fopen(filename_a, "r");	
+  FILE *fileb = fopen (filename_b, "wb");
+  int count = sizeof(buf);
+  while (count == sizeof(buf)) {
+    count = fread(buf, 1, sizeof(buf), filea);
+    fwrite(buf, 1, count, fileb);
+  }
+  fclose(filea);
+  fclose(fileb);
+
+}
+
 int
 image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
 	    const char *filename_a,
@@ -103,6 +119,12 @@ image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
     unsigned int width_b, height_b, stride_b;
     unsigned char *buf_b, *buf_diff;
     read_png_status_t status;
+
+    if (cache_compare(filename_b, buf_a, height_a * stride_a)) {
+      copy_file(filename_b, filename_a);
+      xunlink (filename_diff);
+      return 0;
+    }
 
     status = read_png_argb32 (filename_b, &buf_b, &width_b, &height_b, &stride_b);
     if (status) {
@@ -140,16 +162,7 @@ image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
 	write_png_argb32 (buf_a, png_file, width_a, height_a, stride_a);
 	fclose (png_file);
     } else {
-	char buf[4096];
-	FILE *ref_file = fopen(filename_b, "r");	
-	FILE *png_file = fopen (filename_a, "wb");
-	int count = sizeof(buf);
-	while (count == sizeof(buf)) {
-	  count = fread(buf, 1, sizeof(buf), ref_file);
-	  fwrite(buf, 1, count, png_file);
-	}
-	fclose(ref_file);
-	fclose(png_file);
+        copy_file(filename_b, filename_a);
 	xunlink (filename_diff);
     }
 

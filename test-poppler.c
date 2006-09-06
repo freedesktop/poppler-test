@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <poppler.h>
 #include <glob.h>
-
+#include "read-cache.h"
 #define FAIL(msg) \
 	do { fprintf (stderr, "FAIL: %s\n", msg); exit (-1); } while (0)
 
@@ -18,7 +18,18 @@ typedef enum poppler_test_status {
       POPPLER_TEST_FAILURE
 } poppler_test_status_t;
 
-poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *pdf_file, int page_index)
+int ilog10(int a)
+{
+  int l = 10;
+  int log = 0;
+  while (a >= l) {
+    l *= 10;
+    log++;
+  }
+  return log;
+}
+
+poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
 {
   char *png_name, *ref_name, *diff_name;
   char *srcdir;
@@ -29,10 +40,9 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *pdf_file, int 
   srcdir = getenv ("srcdir");
   if (!srcdir)
     srcdir = ".";
- 
-  asprintf (&png_name, "%s-%d-%s%s", pdf_file, page_index, backend, POPPLER_TEST_PNG_SUFFIX);
-  asprintf (&ref_name, "%s/%s-%d-%s%s", srcdir, pdf_file, page_index, backend, POPPLER_TEST_REF_SUFFIX);
-  asprintf (&diff_name, "%s-%d-%s%s", pdf_file, page_index, backend, POPPLER_TEST_DIFF_SUFFIX);
+  asprintf (&png_name, "%s-%s%s", page_name, backend, POPPLER_TEST_PNG_SUFFIX);
+  asprintf (&ref_name, "%s/%s-%s%s", srcdir, page_name, backend, POPPLER_TEST_REF_SUFFIX);
+  asprintf (&diff_name, "%s-%s%s", page_name, backend, POPPLER_TEST_DIFF_SUFFIX);
 #ifdef PNG_SAVE
   gdk_pixbuf_save (pixbuf, png_name, "png", &error, NULL);
   pixels_changed = image_diff (png_name, ref_name, diff_name);
@@ -67,16 +77,19 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *pdf_file, int 
   return pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
 }
 
-poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index) {
+poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index, int n_pages) {
   GdkPixbuf *pixbuf, *thumb;
   double width, height;
   PopplerPage *page;
   poppler_test_status_t ret;
-  
-  char thumb_file[strlen(pdf_file) + strlen("-thumb") + 1];
-  strcpy(thumb_file, pdf_file);
-  strcat(thumb_file, "-thumb");
-  
+  char *page_format;
+  char *page_name;
+  char *thumb_name;
+
+  asprintf(&page_format, "%%s-%%0%dd", ilog10(n_pages)+1);
+  asprintf(&page_name, page_format, pdf_file, page_index);
+  asprintf(&thumb_name, "%s-thumb", page_name);
+
   page = poppler_document_get_page (document, page_index);
   if (!page)
     FAIL ("page not found");
@@ -87,17 +100,19 @@ poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *documen
   gdk_pixbuf_fill (pixbuf, 0x00106000);
   poppler_page_render_to_pixbuf (page, 0, 0, width, height, 1.0, 0, pixbuf);
 
-  ret = gdk_pixbuf_compare(pixbuf, pdf_file, page_index);
+  ret = gdk_pixbuf_compare(pixbuf, page_name);
   
   thumb = poppler_page_get_thumbnail(page);
   if (thumb)
-    ret |= gdk_pixbuf_compare(thumb, thumb_file, page_index);
+    ret |= gdk_pixbuf_compare(thumb, thumb_name);
  
   if (thumb)
     g_object_unref (G_OBJECT (thumb));
   g_object_unref (G_OBJECT (page));
   g_object_unref (G_OBJECT (pixbuf));
 
+  free(page_format);
+  free(page_name);
   return ret;
 }
 
@@ -125,7 +140,7 @@ void poppler_test(char *pdf_file)
   for (i=0; i<n_pages; i++) {
     printf("%s-%d ", pdf_file, i);
     fflush(stdout);
-    if (poppler_test_page(pdf_file, document, i))
+    if (poppler_test_page(pdf_file, document, i, n_pages))
       printf("FAIL\n");
     else
       printf("PASS\n");
@@ -140,10 +155,12 @@ int main(int argc, char **argv)
   int i;
   g_type_init ();
   if (argc > 1) {
+	  cache_init(argv[1]);
 	  for (i=1; i<argc; i++) {
 		  poppler_test(argv[i]);
 	  }
   } else {
+	  cache_init("tests/");
 	  glob("tests/*.pdf", 0, NULL, &globbuf);
 	  for (i=0; i<globbuf.gl_pathc; i++) {
 		  poppler_test(globbuf.gl_pathv[i]);

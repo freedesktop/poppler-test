@@ -1,4 +1,4 @@
-CFLAGS = $(shell pkg-config --cflags poppler-glib pango gdk-2.0) -g
+CFLAGS = $(shell pkg-config --cflags poppler-glib pango gdk-2.0) -g -Wall -O2
 LDLIBS = $(shell pkg-config --libs poppler-glib)
 
 PDFS = $(addprefix tests/, mask.pdf text.pdf image.pdf type3.pdf cropbox.pdf inline-image.pdf degenerate-path.pdf)
@@ -7,12 +7,15 @@ ifdef POPPLER_DIR
 	POPPLER_DEPS = $(POPPLER_DIR)/poppler/libpoppler.la
 endif
 
-all : test-poppler $(PDFS)
+all : test-poppler update-cache $(PDFS)
 
-test-poppler: buffer-diff.o  read-png.o  test-poppler.o  write-png.o  xmalloc.o $(POPPLER_DEPS)
+test-poppler: buffer-diff.o  read-png.o  test-poppler.o  write-png.o  xmalloc.o read-cache.o $(POPPLER_DEPS)
 ifdef POPPLER_DIR
-	$(POPPLER_DIR)/libtool --mode=link gcc  -g -O2  -lpng -o $@  $^ $(POPPLER_DIR)/poppler/libpoppler.la $(POPPLER_DIR)/glib/libpoppler-glib.la 
+	$(POPPLER_DIR)/libtool --mode=link gcc -Wall -g -O2  -lpng -lssl -o $@  $^ $(POPPLER_DIR)/poppler/libpoppler.la $(POPPLER_DIR)/glib/libpoppler-glib.la 
 endif
+
+update-cache: update-cache.o read-cache.o read-png.o xmalloc.o
+	$(CC) -Wall $^ -o $@ -lpng -lssl
 
 clean :
 	rm test-poppler *.o tests/*out.png

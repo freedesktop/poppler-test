@@ -69,8 +69,8 @@ int cache_compare(const char *path, const unsigned char *buffer, unsigned int le
       unsigned char hash[SHA_DIGEST_LENGTH];
       //printf("found entry\n");
       SHA1(buffer, length, hash);
-      print_hash(cache_hash);
-      print_hash(hash);
+      //print_hash(cache_hash);
+      //print_hash(hash);
       current_cache_entry = cache_hash + SHA_DIGEST_LENGTH;
       match = memcmp(hash, cache_hash, SHA_DIGEST_LENGTH) == 0 ? 1 : 0;
       //printf("match %d\n", match);

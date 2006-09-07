@@ -23,23 +23,35 @@ endobj
 endobj
 4 0 obj
 <<
-/Length 210
+/Length 324
 >>
 stream
 0 0.1 1 RG 13 w 1 J
 100 250 m 100 250 l S
 150 250 m s
 200 250 m h S
+q
+[10 15] 0 d
+220 250 m 220 250 l s
+Q
 1 0 0 1 0 -100 cm
 2 J
 100 250 m 100 250 l S
 150 250 m s
 200 250 m h S
+q
+[10 15] 0 d
+220 250 m 220 250 l s
+Q
 1 0 0 1 0 -100 cm
 0 J
 100 250 m 100 250 l S
 150 250 m s
 200 250 m h S
+q
+[10 15] 0 d
+220 250 m 220 250 l s
+Q
 s
 endstream
 endobj
@@ -56,5 +68,5 @@ trailer
 /Size 5
 >>
 startxref
-476
+590
 %%EOF

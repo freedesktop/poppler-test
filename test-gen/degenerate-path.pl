@@ -13,6 +13,10 @@ sub draw_dots {
   $page->add("100 250 m 100 250 l S\n"); # simple degenerate path
   $page->add("150 250 m s\n"); # simple closed degenerate path
   $page->add("200 250 m h S\n"); # explicit closed degenerate path
+  $page->add("q\n");
+  $page->add("[10 15] 0 d\n");
+  $page->add("220 250 m 220 250 l s\n");
+  $page->add("Q\n");
 }
 
 # round caps

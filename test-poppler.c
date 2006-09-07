@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <time.h>
 #include <poppler.h>
 #include <glob.h>
 #include "read-cache.h"
@@ -153,7 +155,12 @@ int main(int argc, char **argv)
 {
   glob_t globbuf;
   int i;
+  struct timeval start;
+  struct timeval end;
+  int total_secs;
   g_type_init ();
+
+  gettimeofday(&start, NULL);
   if (argc > 1) {
 	  cache_init(argv[1]);
 	  for (i=1; i<argc; i++) {
@@ -167,7 +174,10 @@ int main(int argc, char **argv)
 	  }
 	  globfree(&globbuf);
   }
+  gettimeofday(&end, NULL);
 
+  total_secs = (end.tv_sec - start.tv_sec);
+  printf("tests took %dmin %dsec\n", total_secs / 60, total_secs % 60);
   return 0;
 }
 

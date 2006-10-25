@@ -53,6 +53,14 @@ static void print_hash(const unsigned char *hash)
   printf("\n");
 }
 
+static int cache_misses;
+static int cache_hits;
+
+void cache_stats_print(void)
+{
+  printf("cache: %d of %d hits\n", cache_hits, cache_misses + cache_hits);
+}
+
 int cache_compare(const char *path, const unsigned char *buffer, unsigned int length)
 {
   char *path_copy = strdup(path);
@@ -76,8 +84,6 @@ int cache_compare(const char *path, const unsigned char *buffer, unsigned int le
       //printf("match %d\n", match);
       break;
     } else if (result < 0) {
-      //printf("moving to next entry: %s vs. %s did not match\n", name, current_cache_entry);
-      current_cache_entry += cache_length + 1 + SHA_DIGEST_LENGTH;
       break;
     } else {
       //printf("trying next entry: %s vs. %s did not match\n", name, current_cache_entry);
@@ -85,6 +91,11 @@ int cache_compare(const char *path, const unsigned char *buffer, unsigned int le
     }
   }
   free(path_copy);
+
+  if (match)
+    cache_hits++;
+  else
+    cache_misses++;
 
   return match;
 }

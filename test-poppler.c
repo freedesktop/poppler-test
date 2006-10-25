@@ -178,6 +178,7 @@ int main(int argc, char **argv)
 
   total_secs = (end.tv_sec - start.tv_sec);
   printf("tests took %dmin %dsec\n", total_secs / 60, total_secs % 60);
+  cache_stats_print();
   return 0;
 }
 

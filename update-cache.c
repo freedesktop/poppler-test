@@ -1,5 +1,6 @@
-#include <stdlib.h>
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include <glob.h>
 #include <string.h>
 #include <openssl/sha.h>
@@ -10,7 +11,7 @@
 static void hash_image(FILE *cache, const char *path)
 {
   unsigned int width, height, stride;
-  unsigned char *buf, *buf_diff;
+  unsigned char *buf;
   unsigned char hash[SHA_DIGEST_LENGTH];
   unsigned int buffer_length;
   read_png_status_t status;

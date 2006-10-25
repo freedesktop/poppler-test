@@ -1,7 +1,8 @@
 CFLAGS = $(shell pkg-config --cflags poppler-glib pango gdk-2.0) -g -Wall -O2
 LDLIBS = $(shell pkg-config --libs poppler-glib)
-
-PDFS = $(addprefix tests/, mask.pdf text.pdf image.pdf type3.pdf cropbox.pdf inline-image.pdf degenerate-path.pdf)
+PDFNAMES = mask.pdf text.pdf image.pdf type3.pdf cropbox.pdf \
+           inline-image.pdf degenerate-path.pdf mask-seams.pdf
+PDFS = $(addprefix tests/, $(PDFNAMES))
 
 ifdef POPPLER_DIR
 	POPPLER_DEPS = $(POPPLER_DIR)/poppler/libpoppler.la

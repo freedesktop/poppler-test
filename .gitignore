@@ -1,0 +1,4 @@
+*.o
+.libs/*
+test-poppler
+update-cache

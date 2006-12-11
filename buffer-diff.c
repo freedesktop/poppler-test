@@ -30,6 +30,7 @@
 #include "read-png.h"
 #include "write-png.h"
 #include "util.h"
+#include "read-cache.h"
 
 int
 buffer_diff (unsigned char *buf_a,

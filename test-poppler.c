@@ -13,6 +13,7 @@
 
 #include "util.h"
 #include "read-cache.h"
+#include "buffer-diff.h"
 #define FAIL(msg) \
 	do { fprintf (stderr, "FAIL: %s\n", msg); exit (-1); } while (0)
 

@@ -81,11 +81,13 @@ buffer_diff (unsigned char *buf_a,
     return pixels_changed;
 }
 
-static void copy_file(const char *filename_a, const char *filename_b)
+static int copy_file(const char *filename_a, const char *filename_b)
 {
   char buf[4096];
   FILE *filea = fopen(filename_a, "r");	
   FILE *fileb = fopen (filename_b, "wb");
+  if (!filea || !fileb)
+    return -1;
   int count = sizeof(buf);
   while (count == sizeof(buf)) {
     count = fread(buf, 1, sizeof(buf), filea);
@@ -93,7 +95,7 @@ static void copy_file(const char *filename_a, const char *filename_b)
   }
   fclose(filea);
   fclose(fileb);
-
+  return 0;
 }
 
 int
@@ -108,9 +110,10 @@ image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
     read_png_status_t status;
 
     if (cache_compare(filename_b, buf_a, height_a * stride_a)) {
-      copy_file(filename_b, filename_a);
-      xunlink (filename_diff);
-      return 0;
+      if (copy_file(filename_b, filename_a) == 0) {
+	xunlink (filename_diff);
+	return 0;
+      }
     }
 
     status = read_png_argb32 (filename_b, &buf_b, &width_b, &height_b, &stride_b);

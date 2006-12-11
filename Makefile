@@ -18,8 +18,8 @@ endif
 update-cache: update-cache.o read-cache.o read-png.o util.o
 	$(CC) -Wall $^ -o $@ -lpng -lssl
 
-clean :
-	rm test-poppler *.o tests/*out.png
+clean:
+	rm -f test-poppler *.o tests/*out.png
 
 # don't build the pdfs by default because some people might not have the right perl setup
 $(PDFS): tests/%.pdf: test-gen/%.pl

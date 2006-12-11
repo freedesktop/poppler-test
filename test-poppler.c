@@ -56,10 +56,7 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
   asprintf (&png_name, "%s-%s%s", page_name, backend, POPPLER_TEST_PNG_SUFFIX);
   asprintf (&ref_name, "%s/%s-%s%s", srcdir, page_name, backend, POPPLER_TEST_REF_PNG_SUFFIX);
   asprintf (&diff_name, "%s-%s%s", page_name, backend, POPPLER_TEST_DIFF_PNG_SUFFIX);
-#ifdef PNG_SAVE
-  gdk_pixbuf_save (pixbuf, png_name, "png", &error, NULL);
-  pixels_changed = image_diff (png_name, ref_name, diff_name);
-#else
+
   int width = gdk_pixbuf_get_width (pixbuf);
   int height = gdk_pixbuf_get_height (pixbuf);
 
@@ -80,7 +77,6 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
   pixels_changed = image_buf_diff (cairo_pixels, width, height, width*4, png_name, ref_name, diff_name);
 
   free (cairo_pixels);
-#endif
   free (png_name);
   free (ref_name);
   free (diff_name);

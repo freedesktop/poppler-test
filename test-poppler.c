@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -8,6 +9,7 @@
 #include <glob.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "util.h"
 #include "read-cache.h"
@@ -45,7 +47,6 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
 {
   char *png_name, *ref_name, *diff_name;
   char *srcdir;
-  GError *error = NULL;
   int pixels_changed;
   const char *backend = poppler_get_backend() == POPPLER_BACKEND_SPLASH ? "splash" : "cairo";
    /* Get the strings ready that we'll need. */
@@ -210,7 +211,7 @@ void poppler_test(char *pdf_file)
       printf("PASS\n");
   }
   g_object_unref (G_OBJECT (document));
-  gfree (uri);
+  g_free (uri);
 }
 
 int main(int argc, char **argv)

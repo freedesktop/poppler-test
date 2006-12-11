@@ -60,8 +60,6 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
   gdk_pixbuf_save (pixbuf, png_name, "png", &error, NULL);
   pixels_changed = image_diff (png_name, ref_name, diff_name);
 #else
-  int n_channels = gdk_pixbuf_get_n_channels(pixbuf);
-
   int width = gdk_pixbuf_get_width (pixbuf);
   int height = gdk_pixbuf_get_height (pixbuf);
 
@@ -184,12 +182,8 @@ poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *documen
 void poppler_test(char *pdf_file)
 {
   PopplerDocument *document;
-  char *title, *label;
   GError *error;
-  GList *list, *l;
   char *uri;
-  char *srcdir;
-  poppler_test_status_t ret;
 
   /* build an absolute url for poppler_document_new_from_file */
   gchar * cwd = g_get_current_dir();

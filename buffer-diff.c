@@ -24,25 +24,12 @@
  * Author: Richard D. Worth <richard@theworths.org> */
 
 #include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
 #include <stdint.h>
 
 #include "buffer-diff.h"
 #include "read-png.h"
 #include "write-png.h"
-#include "xmalloc.h"
-
-static void
-xunlink (const char *pathname)
-{
-    if (unlink (pathname) < 0 && errno != ENOENT) {
-	fprintf (stderr, "  Error: Cannot remove %s: %s\n",
-		 pathname, strerror (errno));
-	exit (1);
-    }
-}
+#include "util.h"
 
 int
 buffer_diff (unsigned char *buf_a,

@@ -30,7 +30,7 @@
 #include <png.h>
 
 #include "read-png.h"
-#include "xmalloc.h"
+#include "util.h"
 
 static void
 premultiply_data (png_structp   png,

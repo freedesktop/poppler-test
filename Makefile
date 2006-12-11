@@ -10,12 +10,12 @@ endif
 
 all : test-poppler update-cache $(PDFS)
 
-test-poppler: buffer-diff.o  read-png.o  test-poppler.o  write-png.o  xmalloc.o read-cache.o $(POPPLER_DEPS)
+test-poppler: buffer-diff.o  read-png.o  test-poppler.o  write-png.o  util.o read-cache.o $(POPPLER_DEPS)
 ifdef POPPLER_DIR
 	$(POPPLER_DIR)/libtool --mode=link gcc -Wall -g -O2  -lpng -lssl -o $@  $^ $(POPPLER_DIR)/poppler/libpoppler.la $(POPPLER_DIR)/glib/libpoppler-glib.la 
 endif
 
-update-cache: update-cache.o read-cache.o read-png.o xmalloc.o
+update-cache: update-cache.o read-cache.o read-png.o util.o
 	$(CC) -Wall $^ -o $@ -lpng -lssl
 
 clean :

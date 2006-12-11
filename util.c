@@ -25,8 +25,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
 
-#include "xmalloc.h"
+#include "util.h"
 
 void *
 xmalloc (size_t size)
@@ -56,3 +59,12 @@ xcalloc (size_t nmemb, size_t size)
     return buf;
 }
 
+void
+xunlink (const char *pathname)
+{
+    if (unlink (pathname) < 0 && errno != ENOENT) {
+	fprintf (stderr, "  Error: Cannot remove %s: %s\n",
+		 pathname, strerror (errno));
+	exit (1);
+    }
+}

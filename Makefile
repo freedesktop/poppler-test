@@ -1,5 +1,5 @@
 CFLAGS = $(shell pkg-config --cflags poppler-glib pango gdk-2.0) -g -Wall -O2
-LDLIBS = $(shell pkg-config --libs poppler-glib)
+LDLIBS = $(shell pkg-config --libs poppler-glib) -lssl
 PDFNAMES = mask.pdf text.pdf image.pdf type3.pdf cropbox.pdf \
            inline-image.pdf degenerate-path.pdf mask-seams.pdf
 PDFS = $(addprefix tests/, $(PDFNAMES))

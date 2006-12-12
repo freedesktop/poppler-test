@@ -152,7 +152,6 @@ poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *documen
   poppler_page_get_size (page, &width, &height);
 
   pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
-  gdk_pixbuf_fill (pixbuf, 0x00106000);
   poppler_page_render_to_pixbuf (page, 0, 0, width, height, 1.0, 0, pixbuf);
 
   ret = gdk_pixbuf_compare(pixbuf, page_name);

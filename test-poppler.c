@@ -218,7 +218,6 @@ int main(int argc, char **argv)
       text_output = true;
       break;
   }
-  printf("%d %d\n", argc, optind);
   gettimeofday(&start, NULL);
   if ((argc - optind) >= 1) {
 	  cache_init(argv[optind]);

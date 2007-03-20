@@ -9,9 +9,9 @@
 #include <openssl/sha.h>
 #include "read-cache.h"
 
-unsigned char *cache;
-unsigned char *cache_end;
-unsigned char *current_cache_entry;
+char *cache;
+char *cache_end;
+char *current_cache_entry;
 void cache_init(const char *path)
 {
   FILE *f = cache_open(path, "r");
@@ -74,7 +74,7 @@ int cache_compare(const char *path, const unsigned char *buffer, unsigned int le
     int min_length = MIN(cache_length, name_length);
     int result = memcmp(name, current_cache_entry, min_length);
     if (result == 0) {
-      unsigned char *cache_hash = current_cache_entry + cache_length + 1;
+      char *cache_hash = current_cache_entry + cache_length + 1;
       unsigned char hash[SHA_DIGEST_LENGTH];
       //printf("found entry\n");
       SHA1(buffer, length, hash);

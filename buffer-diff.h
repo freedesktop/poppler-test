@@ -39,7 +39,7 @@ buffer_diff (unsigned char *buf_a,
 	     int	    stride);
 
 int
-image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
+image_buf_diff (void *buf_a, int width_a, int height_a, int stride_a,
 	    const char *filename_a,
 	    const char *filename_b,
 	    const char *filename_diff);

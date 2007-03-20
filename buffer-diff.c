@@ -100,7 +100,7 @@ static int copy_file(const char *filename_a, const char *filename_b)
 }
 
 int
-image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
+image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
 	    const char *filename_a,
 	    const char *filename_b,
 	    const char *filename_diff)
@@ -108,6 +108,7 @@ image_buf_diff (char *buf_a, int width_a, int height_a, int stride_a,
     int pixels_changed;
     unsigned int width_b, height_b, stride_b;
     unsigned char *buf_b, *buf_diff;
+    unsigned char *buf_a = buf;
     read_png_status_t status;
 
     if (cache_compare(filename_b, buf_a, height_a * stride_a)) {

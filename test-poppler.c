@@ -25,8 +25,13 @@
 #define POPPLER_TEST_TXT_SUFFIX "-out.txt"
 #define POPPLER_TEST_REF_TXT_SUFFIX "-ref.txt"
 #define POPPLER_TEST_DIFF_TXT_SUFFIX "-diff.txt"
+#define POPPLER_TEST_PS_SUFFIX "-out.ps"
+#define POPPLER_TEST_REF_PS_SUFFIX "-ref.ps"
+#define POPPLER_TEST_DIFF_PS_SUFFIX "-diff.ps"
+
 
 bool text_output = false;
+bool ps_output = false;
 
 typedef enum poppler_test_status {
       POPPLER_TEST_SUCCESS = 0,
@@ -83,6 +88,59 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
   free (diff_name);
 
   return pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
+}
+
+PopplerPSFile *poppler_ps_file_new            (PopplerDocument *document,
+                                               const char      *filename,
+                                               int              first_page,
+                                               int              n_pages);
+void           poppler_ps_file_set_paper_size (PopplerPSFile   *ps_file,
+                                               double           width,
+                                               double           height);
+void           poppler_ps_file_set_duplex     (PopplerPSFile   *ps_file,
+                                               gboolean         duplex);
+void           poppler_ps_file_free           (PopplerPSFile   *ps_file);
+
+poppler_test_status_t poppler_test_document_ps(PopplerDocument *document, char *postscript_name)
+{
+  char *ps_name, *ref_name, *diff_name;
+  char *srcdir;
+  int i;
+  poppler_test_status_t ret = POPPLER_TEST_SUCCESS;
+
+  /* Get the strings ready that we'll need. */
+  srcdir = getenv ("srcdir");
+  if (!srcdir)
+    srcdir = ".";
+
+  asprintf (&ps_name, "%s%s", postscript_name, POPPLER_TEST_PS_SUFFIX);
+  asprintf (&ref_name, "%s/%s%s", srcdir, postscript_name, POPPLER_TEST_REF_PS_SUFFIX);
+  asprintf (&diff_name, "%s%s", postscript_name, POPPLER_TEST_DIFF_PS_SUFFIX);
+  int n_pages = poppler_document_get_n_pages(document);
+  PopplerPSFile *ps_file = poppler_ps_file_new(document, ps_name, 0, poppler_document_get_n_pages(document));
+  for (i=0; i<n_pages; i++) {
+    PopplerPage *page = poppler_document_get_page (document, i);
+    poppler_page_render_to_ps (page, ps_file);
+  }
+  /* we need to free before comparing otherwise the document might not be flushed */
+  poppler_ps_file_free(ps_file);
+
+  {
+    char *diff_cmd;
+    asprintf (&diff_cmd, "diff -u %s %s > %s", ps_name, ref_name, diff_name);
+    int diff_ret = WEXITSTATUS(system(diff_cmd));
+    if (diff_ret == 0 || diff_ret == 2 /* file not found */) {
+      xunlink (diff_name);
+    }
+    if (diff_ret)
+      ret = POPPLER_TEST_FAILURE;
+    free(diff_cmd);
+  }
+
+  free(ps_name);
+  free(ref_name);
+  free(diff_name);
+  return ret;
 }
 
 poppler_test_status_t poppler_test_page_text(PopplerPage *page, char *text_name)
@@ -200,6 +258,15 @@ void poppler_test(char *pdf_file)
     else
       printf("PASS\n");
   }
+  if (ps_output) {
+    printf("%s-ps ", pdf_file);
+    fflush(stdout);
+    if (poppler_test_document_ps(document, pdf_file))
+      printf("FAIL\n");
+    else
+      printf("PASS\n");
+  }
+
   g_object_unref (G_OBJECT (document));
   g_free (uri);
 }
@@ -212,11 +279,16 @@ int main(int argc, char **argv)
   struct timeval end;
   int total_secs;
   g_type_init ();
-
-  switch (getopt(argc, argv, "t")) {
-    case 't':
-      text_output = true;
-      break;
+  int opt;
+  while ((opt = getopt(argc, argv, "tp")) != -1) {
+    switch (opt) {
+      case 't':
+	text_output = true;
+	break;
+      case 'p':
+	ps_output = true;
+	break;
+    }
   }
   gettimeofday(&start, NULL);
   if ((argc - optind) >= 1) {

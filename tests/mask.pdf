@@ -13,6 +13,24 @@ endobj
 /Resources <<
 /XObject <<
 /IMG1 4 0 R
+/IMG2 <<
+/Type /XObject
+/Subtype /Image
+/Decode [ 1 ]
+/Height 128
+/Width 171
+/ColorSpace /DeviceGray
+/Length 6 0 R
+/Filter [ /FlateDecode ]
+/ImageMask true
+/BitsPerComponent 1
+/Name /IMG1
+>>
+stream
+xœíÓÍ‘„ àgyðH†â†2™Hh„B9P¸
+2v;Ìx™­ZŽ_ñÿº—…šÂ?¬[Uâž*`hU	ô÷@×¨~U4ªãunS»éÔ¦†×±Mõ¦¢M~H}”ˆ²JhRM	ã…¢cµ{RÞrŠ³º³:´úQRË¨ð%Œ¤fý/JG^ÇZõ
+’ÐiSQ«ZU:ó:Ô*WÕ„†’èk«æ¬]Ð®ÒÐAà•ºOt>ª½Öé¨æÕIÇ7TU…%©êIe¸~îRãSsDY—Võ1šÜ•º¬8«­ÕÆSx‹šø&ÇêTT“ª¢úFRA(Ê\AêÕíµÖgMï·©*ƒÊ}¥L¡Ó”Øo{|¦Óíîï{ççñ¯_¯¿{ç„Ì
+endstream
 >>
 /ProcSet [ /PDF /Text ]
 >>
@@ -34,7 +52,7 @@ endobj
 /Height 128
 /Width 171
 /ColorSpace /DeviceGray
-/Length 6 0 R
+/Length 7 0 R
 /Filter [ /FlateDecode ]
 /ImageMask true
 /BitsPerComponent 1
@@ -48,7 +66,7 @@ endstream
 endobj
 5 0 obj
 <<
-/Length 69
+/Length 138
 >>
 stream
 q
@@ -56,25 +74,34 @@ q
 171.000 0.000 0.000 128.000 100.000 500.000 cm
 /IMG1 Do
 Q
+q
+0 0 1 rg
+171.000 0.000 0.000 128.000 100.000 300.000 cm
+/IMG2 Do
+Q
 endstream
 endobj
 6 0 obj
 294
 endobj
+7 0 obj
+294
+endobj
 xref
-0 7
+0 8
 0000000000 65535 f 
 0000000015 00000 n 
 0000000064 00000 n 
-0000000217 00000 n 
-0000000284 00000 n 
-0000000781 00000 n 
-0000000899 00000 n 
+0000000719 00000 n 
+0000000786 00000 n 
+0000001283 00000 n 
+0000001471 00000 n 
+0000001490 00000 n 
 trailer
 <<
 /Root 1 0 R
-/Size 7
+/Size 8
 >>
 startxref
-918
+1509
 %%EOF

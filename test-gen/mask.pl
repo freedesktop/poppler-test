@@ -29,10 +29,35 @@ $pdf->new_obj($xo);
 $root->{'Resources'}->{'XObject'}=PDFDict();
 $root->{'Resources'}->{'XObject'}->{$key}=$xo;
 
+my $key2='IMG2';
+my $xo2=PDFDict();
+$xo2->{'ImageMask'}=PDFBool('true');
+$xo2->{'Type'}=PDFName('XObject');
+$xo2->{'Subtype'}=PDFName('Image');
+$xo2->{'Name'}=PDFName($key);
+$xo2->{'Width'}=PDFNum($w);
+$xo2->{'Height'}=PDFNum($h);
+$xo2->{'Decode'}=PDFArray(PDFNum(1));
+$xo2->{'Filter'}=PDFArray(PDFName('FlateDecode'));
+$xo2->{'BitsPerComponent'}=PDFNum($bpc);
+$xo2->{'ColorSpace'}=PDFName($cs);
+$xo2->{' stream'}=$img;
+$pdf->new_obj($xo);
+$root->{'Resources'}->{'XObject'}=PDFDict();
+$root->{'Resources'}->{'XObject'}->{$key}=$xo;
+$root->{'Resources'}->{'XObject'}->{$key2}=$xo2;
+
+
 $page->add("q\n"); #saveState
 $page->add("0 0 1 rg\n");
 $page->add(sprintf("%0.3f %0.3f %0.3f %0.3f %0.3f %0.3f cm\n", $w,0,0,$h,100,500));
 $page->add("/$key Do\n");
+$page->add("Q\n"); #restoreState
+$page->add("q\n"); #saveState
+$page->add("0 0 1 rg\n");
+$page->add(sprintf("%0.3f %0.3f %0.3f %0.3f %0.3f %0.3f cm\n", $w,0,0,$h,100,300));
+$page->add("/$key2 Do\n");
 $page->add("Q"); #restoreState
+
 $pdf->out_file($ARGV[0]);   # output the document to a file
 

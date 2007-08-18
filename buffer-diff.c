@@ -120,11 +120,7 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
 
     status = read_png_argb32 (filename_b, &buf_b, &width_b, &height_b, &stride_b);
     if (status) {
-	// write out the buffer on failure
-	FILE *png_file = fopen (filename_a, "wb");
-	write_png_argb32 (buf_a, png_file, width_a, height_a, stride_a);
-	fclose (png_file);
-	return -1;
+	goto fail;
     }
 
     if (width_a  != width_b  ||
@@ -138,7 +134,7 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
 		 width_b, height_b, stride_b,
 		 filename_a, filename_b);
 	free (buf_b);
-	return -1;
+	goto fail;
     }
 
     buf_diff = xcalloc (stride_a * height_a, 1);
@@ -162,7 +158,17 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
     free (buf_diff);
 
     return pixels_changed;
+
+fail:
+    {
+	// write out the buffer on failure
+	FILE *png_file = fopen (filename_a, "wb");
+	write_png_argb32 (buf_a, png_file, width_a, height_a, stride_a);
+	fclose (png_file);
+	return -1;
+    }
 }
+
 /* Image comparison code courtesy of Richard Worth <richard@theworths.org>
  * Returns number of pixels changed, (or -1 on error).
  * Also saves a "diff" image intended to visually show where the

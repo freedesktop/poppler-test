@@ -32,7 +32,7 @@
 #include "util.h"
 #include "read-cache.h"
 
-int
+struct diff_results
 buffer_diff (unsigned char *buf_a,
 	     unsigned char *buf_b,
 	     unsigned char *buf_diff,
@@ -42,7 +42,7 @@ buffer_diff (unsigned char *buf_a,
 {
     int x, y;
     unsigned char *row_a, *row_b, *row;
-    int pixels_changed = 0;
+    struct diff_results results  = { .pixels_changed = 0, .max_difference = 0 };
 
     for (y = 0; y < height; y++)
     {
@@ -67,19 +67,21 @@ buffer_diff (unsigned char *buf_a,
 		    if (channel_value_a != channel_value_b) {
 			pixel_differs = 1;
 			diff = channel_value_a - channel_value_b;
+			if (diff > results.max_difference)
+			    results.max_difference = diff;
 			row[x * 4 + channel] = 128 + diff / 3.0;
 		    }
 		}
 	    }
 	    if (pixel_differs) {
-		pixels_changed++;
+		results.pixels_changed++;
 		*(uint32_t*)(&(row[x*4])) |= 0xff000000; /* Set ALPHA to 100% (opaque) */
 	    } else {
 		*(uint32_t*)(&(row[x*4])) = 0xff000000; /* Set ALPHA to 100% (opaque) */
 	    }
 	}
     }
-    return pixels_changed;
+    return results;
 }
 
 static int copy_file(const char *filename_a, const char *filename_b)
@@ -99,13 +101,13 @@ static int copy_file(const char *filename_a, const char *filename_b)
   return 0;
 }
 
-int
+struct diff_results
 image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
 	    const char *filename_a,
 	    const char *filename_b,
 	    const char *filename_diff)
 {
-    int pixels_changed;
+    struct diff_results results = { .pixels_changed = 0 };
     unsigned int width_b, height_b, stride_b;
     unsigned char *buf_b, *buf_diff;
     unsigned char *buf_a = buf;
@@ -114,7 +116,7 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
     if (cache_compare(filename_b, buf_a, height_a * stride_a)) {
       if (copy_file(filename_b, filename_a) == 0) {
 	xunlink (filename_diff);
-	return 0;
+	return results;
       }
     }
 
@@ -139,10 +141,10 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
 
     buf_diff = xcalloc (stride_a * height_a, 1);
 
-    pixels_changed = buffer_diff (buf_a, buf_b, buf_diff,
+    results = buffer_diff (buf_a, buf_b, buf_diff,
 				  width_a, height_a, stride_a);
 
-    if (pixels_changed) {
+    if (results.pixels_changed) {
 	FILE *png_file = fopen (filename_diff, "wb");
 	write_png_argb32 (buf_diff, png_file, width_a, height_a, stride_a);
 	fclose (png_file);
@@ -157,7 +159,7 @@ image_buf_diff (void *buf, int width_a, int height_a, int stride_a,
     free (buf_b);
     free (buf_diff);
 
-    return pixels_changed;
+    return results;
 
 fail:
     {
@@ -165,10 +167,11 @@ fail:
 	FILE *png_file = fopen (filename_a, "wb");
 	write_png_argb32 (buf_a, png_file, width_a, height_a, stride_a);
 	fclose (png_file);
-	return -1;
+	results.pixels_changed = -1;
+	return results;
     }
 }
-
+#if 0
 /* Image comparison code courtesy of Richard Worth <richard@theworths.org>
  * Returns number of pixels changed, (or -1 on error).
  * Also saves a "diff" image intended to visually show where the
@@ -229,3 +232,4 @@ image_diff (const char *filename_a,
 
     return pixels_changed;
 }
+#endif

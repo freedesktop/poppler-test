@@ -49,11 +49,11 @@ int ilog10(int a)
   return log;
 }
 
-poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
+struct diff_results gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
 {
   char *png_name, *ref_name, *diff_name;
   char *srcdir;
-  int pixels_changed;
+  struct diff_results results;
   const char *backend = poppler_get_backend() == POPPLER_BACKEND_SPLASH ? "splash" : "cairo";
    /* Get the strings ready that we'll need. */
   srcdir = getenv ("srcdir");
@@ -80,14 +80,14 @@ poppler_test_status_t gdk_pixbuf_compare(GdkPixbuf *pixbuf, char *page_name)
     }
   }
 
-  pixels_changed = image_buf_diff (cairo_pixels, width, height, width*4, png_name, ref_name, diff_name);
+  results = image_buf_diff (cairo_pixels, width, height, width*4, png_name, ref_name, diff_name);
 
   free (cairo_pixels);
   free (png_name);
   free (ref_name);
   free (diff_name);
 
-  return pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
+  return results;
 }
 
 PopplerPSFile *poppler_ps_file_new            (PopplerDocument *document,
@@ -188,7 +188,7 @@ poppler_test_status_t poppler_test_page_text(PopplerPage *page, char *text_name)
   return ret;
 }
 
-poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index, int n_pages) {
+poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *document, int page_index, int n_pages, struct diff_results *results) {
   GdkPixbuf *pixbuf, *thumb;
   double width, height;
   PopplerPage *page;
@@ -212,14 +212,15 @@ poppler_test_status_t poppler_test_page(char *pdf_file, PopplerDocument *documen
   pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
   poppler_page_render_to_pixbuf (page, 0, 0, width, height, 1.0, 0, pixbuf);
 
-  ret = gdk_pixbuf_compare(pixbuf, page_name);
+  *results = gdk_pixbuf_compare(pixbuf, page_name);
+  ret = results->pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
 
   if (text_output)
     ret |= poppler_test_page_text(page, text_name);
 
   thumb = poppler_page_get_thumbnail(page);
   if (thumb)
-    ret |= gdk_pixbuf_compare(thumb, thumb_name);
+    ret |= gdk_pixbuf_compare(thumb, thumb_name).pixels_changed ? POPPLER_TEST_FAILURE : POPPLER_TEST_SUCCESS;
  
   if (thumb)
     g_object_unref (G_OBJECT (thumb));
@@ -251,10 +252,11 @@ void poppler_test(char *pdf_file)
   int i;
   int n_pages = poppler_document_get_n_pages(document);
   for (i=0; i<n_pages; i++) {
+    struct diff_results results;
     printf("%s-%d ", pdf_file, i);
     fflush(stdout);
-    if (poppler_test_page(pdf_file, document, i, n_pages))
-      printf("FAIL\n");
+    if (poppler_test_page(pdf_file, document, i, n_pages, &results))
+      printf("FAIL (%d %d)\n", results.pixels_changed, results.max_difference);
     else
       printf("PASS\n");
   }

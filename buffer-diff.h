@@ -26,11 +26,16 @@
 #ifndef BUFFER_DIFF_H
 #define BUFFER_DIFF_H
 
+struct diff_results {
+    int pixels_changed;
+    int max_difference;
+};
+
 /* Returns number of pixels changed, (or -1 on error).
  * Also fills in a "diff" buffer intended to visually show where the
  * images differ.
  */
-int
+struct diff_results
 buffer_diff (unsigned char *buf_a,
 	     unsigned char *buf_b,
 	     unsigned char *buf_diff,
@@ -38,7 +43,7 @@ buffer_diff (unsigned char *buf_a,
 	     int	    height,
 	     int	    stride);
 
-int
+struct diff_results
 image_buf_diff (void *buf_a, int width_a, int height_a, int stride_a,
 	    const char *filename_a,
 	    const char *filename_b,

@@ -163,7 +163,7 @@ poppler_test_status_t poppler_test_page_text(PopplerPage *page, char *text_name)
   rect->x1 = rect->y1 = 0.0;
   rect->x2 = width;
   rect->y2 = height;
-  char *text = poppler_page_get_text(page, rect);
+  char *text = poppler_page_get_text(page, POPPLER_SELECTION_GLYPH, rect);
   int len = strlen(text);
   if (len) {
     FILE *file = fopen(txt_name, "wb");

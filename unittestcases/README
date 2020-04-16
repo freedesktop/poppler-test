@@ -21,3 +21,9 @@ PasswordEncrypted.pdf: single blank page, created with
 Acrobat 7. This is encrypted with AES128. The password is "password".
 
 WithAttachments.pdf: a simple file with two files attached/ embedded. 
+
+stroke-alpha-pattern.pdf:  Taken from https://gitlab.freedesktop.org/poppler/poppler/-/issues/178
+This file contains a single page with different uses of axial shadings
+with different opacity settings.  In particular it contains a fill
+with an axial shading that is clipped to a path.  In this case,
+the stroke opacity has to be used rather than the fill opacity.
